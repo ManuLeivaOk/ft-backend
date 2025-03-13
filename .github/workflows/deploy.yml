@@ -1,0 +1,29 @@
+name: Deploy NestJS App
+
+on:
+  push:
+    branches:
+      - main  # Cambia esto si usas otra rama
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📂 Clonar el repositorio
+        uses: actions/checkout@v4
+
+      - name: 🔄 Copiar archivos al servidor
+        run: |
+          echo "${{ secrets.SSH_PASSWORD }}" | sshpass -p "${{ secrets.SSH_PASSWORD }}" \
+          scp -r * root@45.236.131.22:/nestapp
+
+      - name: 🚀 Instalar dependencias y reiniciar app
+        run: |
+          echo "${{ secrets.SSH_PASSWORD }}" | sshpass -p "${{ secrets.SSH_PASSWORD }}" \
+          ssh root@45.236.131.22 <<EOF
+            cd /nestapp
+            npm install
+            npm run build
+            pm2 restart all || pm2 start dist/main.js --name nest-app
+          EOF
