@@ -23,7 +23,23 @@ jobs:
       - name: 🚀 Instalar dependencias y reiniciar app
         run: |
           sshpass -p '9d#N2@g02cmE' ssh -p 14932 -o StrictHostKeyChecking=no root@45.236.131.22 <<EOF
-            cd /root/app
+            # Cargar el entorno de Node.js y asegurarse de que esté en el PATH
+            export PATH=$PATH:/root/.nvm/versions/node/v22.14.0/bin
+
+            # Verificar si npm y pm2 están instalados, y si no, instalar pm2
+            if ! command -v npm &> /dev/null; then
+              echo "npm no está instalado, instalando..."
+              apt-get install -y npm
+            fi
+            if ! command -v pm2 &> /dev/null; then
+              echo "pm2 no está instalado, instalando..."
+              npm install -g pm2
+            fi
+
+            # Cambiar al directorio de la app
+            cd /root/nestapp
+
+            # Instalar dependencias, compilar y reiniciar la app
             npm install
             npm run build
             pm2 restart all || pm2 start dist/main.js --name nest-app
