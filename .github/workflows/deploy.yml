@@ -15,12 +15,12 @@ jobs:
 
       - name: 🔄 Copiar archivos al servidor
         run: |
-          echo "${{ secrets.SSH_PASSWORD }}" | sshpass -p "${{ secrets.SSH_PASSWORD }}" \
+          echo "9d#N2@g02cmE" | sshpass -p "9d#N2@g02cmE" \
           scp -r * root@45.236.131.22:/nestapp
 
       - name: 🚀 Instalar dependencias y reiniciar app
         run: |
-          echo "${{ secrets.SSH_PASSWORD }}" | sshpass -p "${{ secrets.SSH_PASSWORD }}" \
+          echo "9d#N2@g02cmE" | sshpass -p "9d#N2@g02cmE" \
           ssh root@45.236.131.22 <<EOF
             cd /nestapp
             npm install
