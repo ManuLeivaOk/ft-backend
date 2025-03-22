@@ -11,8 +11,14 @@ export class User {
   @Column()
   lastName: string;
 
+  @Column()
+  password: string;
+
   @Column({ unique: true })
   email: string;
+
+  @Column({ unique: true })
+  documentNumber: string;
 
   @Column()
   age: number;
@@ -25,4 +31,10 @@ export class User {
 
   @Column()
   birthday: string;
+
+  @Column()
+  colour: string;
+
+  @Column()
+  state: string;
 }
