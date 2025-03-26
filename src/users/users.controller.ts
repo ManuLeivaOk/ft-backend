@@ -1,41 +1,16 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Delete,
-  Put,
-} from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from './entity/user.entity';
+import { CreateUserDto } from './dto/create-users.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
-  }
-
-  @Post()
-  create(@Body() user: User) {
-    return this.usersService.create(user);
-  }
-
-  @Put(':id')
-  update(@Param('id') id: string, @Body() user: Partial<User>) {
-    return this.usersService.update(+id, user);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.delete(+id);
+  @Post('register')
+  create(@Body() createUserDto: CreateUserDto) {
+    console.log('createUserDto', createUserDto);
+    const randomNumber = Math.floor(Math.random() * 6) + 1;
+    createUserDto.group = randomNumber; // Se le asigna desde el comienzo el grupo, para que en la siguiente fase del evento ya quede
+    return this.usersService.create(createUserDto);
   }
 }

@@ -1,20 +1,24 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { TalksAndQuestionsModule } from './events-and-questions/talks-and-questions.module';
+import { DatabaseSeederService } from './seeder/database-seeder';
+import { join } from 'path';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqlite',
-      database: 'dump_rotary_event.db', // Ruta absoluta al dump
+      database: join(__dirname, '..', 'database.sqlite'),
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
       logging: true,
     }),
-    UsersModule, AuthModule],
-  controllers: [AppController],
-  providers: [AppService],
+    TalksAndQuestionsModule,
+    UsersModule,
+    AuthModule,
+  ],
+  providers: [DatabaseSeederService],
 })
 export class AppModule {}

@@ -1,42 +1,69 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './entity/user.entity';
+import { User } from './user.entity';
+import { CreateUserDto } from './dto/create-users.dto';
+import { getColorById } from 'src/utils/getColour';
+import { hashedPassword } from 'src/utils/bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private readonly userRepository: Repository<User>,
   ) {}
 
-  
-  findAll(): Promise<User[]> {
-    return this.usersRepository.find();
-  }
+  async create(userData: CreateUserDto): Promise<User> {
+    try {
+      const existingUser = await this.userRepository.findOne({
+        where: [
+          { documentNumber: userData.documentNumber as string },
+          { email: userData.email },
+        ],
+      });
 
-  async findOne(id: number): Promise<User> {
-    const user = await this.usersRepository.findOne({ where: { id } });
-    if (!user) {
-      throw new NotFoundException(`User with id ${id} not found`);
-    }
-    return user;
-  }
+      if (existingUser) {
+        throw new BadRequestException(
+          'El DNI o el email ya están registrados.',
+        );
+      }
 
-  async create(userData: Partial<User>): Promise<User> {
-    const user = this.usersRepository.create(userData);
-    return await this.usersRepository.save(user);
-  }
+      const lastUser = await this.userRepository.find({
+        take: 1,
+        order: { id: 'DESC' },
+      });
 
-  async update(id: number, userData: Partial<User>): Promise<User> {
-    await this.usersRepository.update(id, userData);
-    return this.findOne(id);
-  }
+      const newId = lastUser.length > 0 ? lastUser[0].id + 1 : 1;
+      const color = getColorById(newId);
 
-  async delete(id: number): Promise<void> {
-    const result = await this.usersRepository.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException(`User with id ${id} not found`);
+      const encryptPass: string = await hashedPassword(userData.password);
+
+      const newUser = this.userRepository.create({
+        ...userData,
+        id: newId,
+        colour: color,
+        password: encryptPass,
+        state: 'firstStep',
+      });
+
+      const savedUser = await this.userRepository.save(newUser);
+
+      savedUser.password = '**********';
+
+      return savedUser;
+    } catch (error) {
+      console.error('Error en la creación del usuario:', error);
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+
+      throw new InternalServerErrorException(
+        'Error al crear el usuario. Por favor, intenta más tarde.',
+      );
     }
   }
 }
