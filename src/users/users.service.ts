@@ -9,12 +9,15 @@ import { User } from './entity/user.entity';
 import { CreateUserDto } from './dto/create-users.dto';
 import { getColorById } from 'src/utils/getColour';
 import { hashedPassword } from 'src/utils/bcrypt';
+import { Dni } from 'src/events-and-questions/entities/dni.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Dni)
+    private readonly dniRepository: Repository<Dni>,
   ) {}
 
   async create(userData: CreateUserDto): Promise<User> {
@@ -29,6 +32,18 @@ export class UsersService {
       if (existingUser) {
         throw new BadRequestException(
           'El DNI o el email ya están registrados.',
+        );
+      }
+
+      const existingDNI = await this.dniRepository.findOne({
+        where: [
+          { dni: userData.documentNumber },
+        ],
+      });
+
+      if (!existingDNI) {
+        throw new BadRequestException(
+          'El DNI no esta registrado.',
         );
       }
 
