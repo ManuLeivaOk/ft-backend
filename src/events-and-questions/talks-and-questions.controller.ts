@@ -8,6 +8,7 @@ import { CreateQuestionDto } from './dto/create-question-dto';
 import { Questions } from './entities/questions.entity';
 import { Event } from './entities/event.entity';
 import { UpdateResult } from 'typeorm';
+import { Dni } from './entities/dni.entity';
 
 @Controller('talks-and-questions')
 export class TalksAndQuestionsController {
@@ -36,12 +37,17 @@ export class TalksAndQuestionsController {
   }
 
   @Get('eventState')
-  getEventState(): Promise<Event[]> {
+  getEventState(): Promise<Event | null> {
     return this.talksService.getEventState();
   }
 
   @Post('updateEventState')
   updateEventState(@Body() body: { newState: number }): Promise<UpdateResult> {
     return this.talksService.updateEventState(body.newState);
+  }
+
+  @Post('addDni')
+  addDni(@Body() body: { dni: number }): Promise<Dni> {
+    return this.talksService.addDni(body.dni);
   }
 }

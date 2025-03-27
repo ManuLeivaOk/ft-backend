@@ -46,6 +46,4 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   documentNumber;
-
-  group: number;
 }

@@ -7,10 +7,11 @@ import { UsersModule } from 'src/users/users.module';
 import { Questions } from './entities/questions.entity';
 import { User } from 'src/users/entity/user.entity';
 import { Event } from './entities/event.entity';
+import { Dni } from './entities/dni.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Questions, Talks, User, Event]),
+    TypeOrmModule.forFeature([Questions, Talks, User, Event, Dni]),
     UsersModule,
   ],
   controllers: [TalksAndQuestionsController],
