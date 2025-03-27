@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { User } from 'src/users/user.entity';
+import { User } from 'src/users/entity/user.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Talks } from './talks.entity';
 

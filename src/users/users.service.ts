@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './user.entity';
+import { User } from './entity/user.entity';
 import { CreateUserDto } from './dto/create-users.dto';
 import { getColorById } from 'src/utils/getColour';
 import { hashedPassword } from 'src/utils/bcrypt';

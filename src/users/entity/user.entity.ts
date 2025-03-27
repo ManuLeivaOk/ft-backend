@@ -1,4 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Questions } from 'src/events-and-questions/entities/questions.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
@@ -10,21 +12,42 @@ export class User {
   @Column()
   lastName: string;
 
-  @Column({ unique: true })
-  email: string;
-
   @Column()
   password: string;
 
+  @Column({ unique: true })
+  email: string;
+
+  @Column({ unique: true })
+  documentNumber: string;
+
   @Column()
-  birth: string;
+  age: number;
 
   @Column()
   school: string;
 
   @Column()
-  age: string;
+  instagram: string;
 
   @Column()
-  instagram: string;
+  birthday: string;
+
+  @Column()
+  colour: string;
+
+  @Column()
+  state: string;
+
+  @Column({ nullable: true })
+  type: number;
+
+  @Column({ nullable: true })
+  group: number;
+
+  @Column({ nullable: true })
+  eventId: number;
+
+  @OneToMany(() => Questions, (question) => question.user)
+  questions: Questions[];
 }
