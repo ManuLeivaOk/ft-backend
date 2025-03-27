@@ -6,6 +6,7 @@ import { Talks } from './entities/talks.entity';
 import { Questions } from './entities/questions.entity';
 import { User } from 'src/users/user.entity';
 import { Event } from './entities/event.entity';
+import { Dni } from './entities/dni.entity';
 
 @Injectable()
 export class TalksAndQuestionsService {
@@ -13,6 +14,7 @@ export class TalksAndQuestionsService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Questions) private questionsRepository: Repository<Questions>,
     @InjectRepository(Event) private eventRepository: Repository<Event>,
+    @InjectRepository(Dni) private dniRepository: Repository<Dni>,
     @InjectRepository(Talks)
     private readonly talkRepository: Repository<Talks>,
   ) {}
@@ -45,11 +47,18 @@ export class TalksAndQuestionsService {
     });
   }
 
-  getEventState(): Promise<Event[]> {
-    return this.eventRepository.find();
+  getEventState(): Promise<Event | null> {
+    return this.eventRepository.findOne({ where: {}, order: { id: 'ASC' } });
   }
+
   
   updateEventState(newState: number): Promise<UpdateResult> {
-    return this.eventRepository.update({}, { state: newState });
+    console.log('newState', newState);
+    
+    return this.eventRepository.update({ id: 1 }, { state: newState });
+  }
+
+  addDni(dni: number): Promise<Dni> {
+    return this.dniRepository.save({ dni });
   }
 }

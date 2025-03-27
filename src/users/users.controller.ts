@@ -9,8 +9,6 @@ export class UsersController {
   @Post('register')
   create(@Body() createUserDto: CreateUserDto) {
     console.log('createUserDto', createUserDto);
-    const randomNumber = Math.floor(Math.random() * 6) + 1;
-    createUserDto.group = randomNumber; // Se le asigna desde el comienzo el grupo, para que en la siguiente fase del evento ya quede
     return this.usersService.create(createUserDto);
   }
 }

@@ -41,9 +41,11 @@ export class UsersService {
       const color = getColorById(newId);
 
       const encryptPass: string = await hashedPassword(userData.password);
-
+      const randomNumber = Math.floor(Math.random() * 6) + 1; // Se le asigna desde el comienzo el grupo, para que en la siguiente fase del evento ya quede
       const newUser = this.userRepository.create({
         ...userData,
+        type: 1,
+        group: randomNumber,
         id: newId,
         colour: color,
         password: encryptPass,
