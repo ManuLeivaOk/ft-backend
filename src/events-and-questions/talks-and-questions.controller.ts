@@ -16,7 +16,6 @@ export class TalksAndQuestionsController {
 
   @Get()
   findAll(): Promise<Talks[]> {
-    console.log('manu putooo');
     return this.talksService.findAll();
   }
 
@@ -34,6 +33,13 @@ export class TalksAndQuestionsController {
     @Param('talkId') talkId: number,
   ): Promise<Questions[]> {
     return this.talksService.findAllQuestionsByTalk(talkId);
+  }
+
+  @Get('questionsByUser/:userId')
+  findAllQuestionsByUser(
+    @Param('userId') userId: number,
+  ): Promise<Questions[]> {
+    return this.talksService.findAllQuestionsByUser(userId);
   }
 
   @Get('eventState')

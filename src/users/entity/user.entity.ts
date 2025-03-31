@@ -40,6 +40,9 @@ export class User {
   state: string;
 
   @Column({ nullable: true })
+  token: string;
+
+  @Column({ nullable: true })
   type: number;
 
   @Column({ nullable: true })

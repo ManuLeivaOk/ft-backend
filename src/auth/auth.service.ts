@@ -9,6 +9,17 @@ import { User } from '../users/entity/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { comparePassword } from 'src/utils/bcrypt';
 
+export type SafeUser = {
+  id: number;
+  name: string;
+  lastName: string;
+  email: string;
+  documentNumber: string;
+  colour: string;
+  state: string;
+  type: string;
+};
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -20,7 +31,12 @@ export class AuthService {
   async validateUser(
     dni: string,
     password: string,
-  ): Promise<{ ok: boolean; msg: string; access_token?: string }> {
+  ): Promise<{
+    ok: boolean;
+    msg: string;
+    access_token?: string;
+    user: SafeUser;
+  }> {
     try {
       const user = await this.userRepository.findOne({
         where: { documentNumber: dni },
@@ -36,12 +52,30 @@ export class AuthService {
         throw new UnauthorizedException('DNI o contraseña incorrectos');
       }
 
-      const payload = { username: user.name, sub: user.id };
+      const payload = {
+        username: user.name,
+        sub: user.id,
+        documentNumber: user.documentNumber,
+      };
+      const access_token = this.jwtService.sign(payload, { expiresIn: '4h' });
+
+      await this.userRepository.update(user.id, { token: access_token });
+      const safeUser: SafeUser = {
+        id: user.id,
+        name: user.name,
+        lastName: user.lastName,
+        email: user.email,
+        documentNumber: user.documentNumber,
+        colour: user.colour,
+        state: user.state,
+        type: JSON.stringify(user.type),
+      };
 
       return {
         ok: true,
         msg: 'Usuario autenticado',
-        access_token: this.jwtService.sign(payload),
+        access_token: access_token,
+        user: safeUser,
       };
     } catch (error) {
       console.error('Error en la validación del usuario:', error);

@@ -10,6 +10,7 @@ import { CreateUserDto } from './dto/create-users.dto';
 import { getColorById } from 'src/utils/getColour';
 import { hashedPassword } from 'src/utils/bcrypt';
 import { Dni } from 'src/events-and-questions/entities/dni.entity';
+import { SafeUser } from 'src/auth/auth.service';
 
 @Injectable()
 export class UsersService {
@@ -35,17 +36,13 @@ export class UsersService {
         );
       }
 
-      const existingDNI = await this.dniRepository.findOne({
-        where: [
-          { dni: userData.documentNumber },
-        ],
+      /* const existingDNI = await this.dniRepository.findOne({
+        where: [{ dni: userData.documentNumber }],
       });
 
       if (!existingDNI) {
-        throw new BadRequestException(
-          'El DNI no esta registrado.',
-        );
-      }
+        throw new BadRequestException('El DNI no esta registrado.');
+      } */
 
       const lastUser = await this.userRepository.find({
         take: 1,
@@ -56,7 +53,7 @@ export class UsersService {
       const color = getColorById(newId);
 
       const encryptPass: string = await hashedPassword(userData.password);
-      const randomNumber = Math.floor(Math.random() * 6) + 1; // Se le asigna desde el comienzo el grupo, para que en la siguiente fase del evento ya quede
+      const randomNumber = Math.floor(Math.random() * 6) + 1;
       const newUser = this.userRepository.create({
         ...userData,
         type: 1,
@@ -80,6 +77,55 @@ export class UsersService {
 
       throw new InternalServerErrorException(
         'Error al crear el usuario. Por favor, intenta más tarde.',
+      );
+    }
+  }
+
+  async changeFirstState(
+    code: string,
+    documentNumber: string,
+  ): Promise<SafeUser> {
+    try {
+      console.log('code', code);
+      console.log('documentNumber', documentNumber);
+
+      if (code !== '894789') {
+        throw new BadRequestException('Código incorrecto');
+      }
+
+      const user = await this.userRepository.findOne({
+        where: { documentNumber: documentNumber },
+      });
+
+      console.log('aca');
+
+      if (!user) {
+        throw new BadRequestException('El usuario no existe');
+      }
+
+      user.state = 'secondStep';
+
+      await this.userRepository.save(user);
+      const safeUser: SafeUser = {
+        id: user.id,
+        name: user.name,
+        lastName: user.lastName,
+        email: user.email,
+        documentNumber: user.documentNumber,
+        colour: user.colour,
+        state: user.state,
+        type: JSON.stringify(user.type),
+      };
+      return safeUser;
+    } catch (error) {
+      console.error('Error en la validación del usuario:', error);
+
+      if (error instanceof BadRequestException) {
+        throw error; // Este error incluye el mensaje en la respuesta
+      }
+
+      throw new InternalServerErrorException(
+        'Error al cambiar el estado del usuario',
       );
     }
   }

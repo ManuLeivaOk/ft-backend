@@ -47,6 +47,12 @@ export class TalksAndQuestionsService {
     });
   }
 
+  findAllQuestionsByUser(userId: number): Promise<Questions[]> {
+    return this.questionsRepository.find({
+        where: { user: { id: userId } },
+    });
+  }
+
   getEventState(): Promise<Event | null> {
     return this.eventRepository.findOne({ where: {}, order: { id: 'ASC' } });
   }
