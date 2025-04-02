@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 
 import { TalksAndQuestionsService } from './talks-and-questions.service';
 import { Talks } from './entities/talks.entity';
@@ -9,7 +7,9 @@ import { Questions } from './entities/questions.entity';
 import { Event } from './entities/event.entity';
 import { UpdateResult } from 'typeorm';
 import { Dni } from './entities/dni.entity';
+import { JwtAuthGuard } from 'src/guards/jwt.auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('talks-and-questions')
 export class TalksAndQuestionsController {
   constructor(private readonly talksService: TalksAndQuestionsService) {}
