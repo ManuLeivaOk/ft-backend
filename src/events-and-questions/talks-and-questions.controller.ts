@@ -56,4 +56,9 @@ export class TalksAndQuestionsController {
   addDni(@Body() body: { dni: number }): Promise<Dni> {
     return this.talksService.addDni(body.dni);
   }
+
+  @Get('groups')
+  getGroups() {
+    return this.talksService.getEvents();
+  }
 }

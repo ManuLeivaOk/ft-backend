@@ -19,4 +19,17 @@ export class UsersController {
   ) {
     return await this.usersService.changeFirstState(code, documentNumber);
   }
+
+  @Get('selectGroup/:documentNumber/:idGroup')
+  async selectGroup(
+    @Param('documentNumber') documentNumber: string,
+    @Param('idGroup') idGroup: string,
+  ) {
+    return await this.usersService.selectGroup(documentNumber, idGroup);
+  }
+
+  @Get('updateSession')
+  async updateSession(@Param('documentNumber') documentNumber: string) {
+    return await this.usersService.updateSession(documentNumber);
+  }
 }

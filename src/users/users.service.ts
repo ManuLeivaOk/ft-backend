@@ -86,9 +86,6 @@ export class UsersService {
     documentNumber: string,
   ): Promise<SafeUser> {
     try {
-      console.log('code', code);
-      console.log('documentNumber', documentNumber);
-
       if (code !== '894789') {
         throw new BadRequestException('Código incorrecto');
       }
@@ -96,8 +93,6 @@ export class UsersService {
       const user = await this.userRepository.findOne({
         where: { documentNumber: documentNumber },
       });
-
-      console.log('aca');
 
       if (!user) {
         throw new BadRequestException('El usuario no existe');
@@ -115,6 +110,85 @@ export class UsersService {
         colour: user.colour,
         state: user.state,
         type: JSON.stringify(user.type),
+        group: user.group,
+      };
+      return safeUser;
+    } catch (error) {
+      console.error('Error en la validación del usuario:', error);
+
+      if (error instanceof BadRequestException) {
+        throw error; // Este error incluye el mensaje en la respuesta
+      }
+
+      throw new InternalServerErrorException(
+        'Error al cambiar el estado del usuario',
+      );
+    }
+  }
+
+  async selectGroup(
+    documentNumber: string,
+    idGroup: string,
+  ): Promise<SafeUser> {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { documentNumber: documentNumber },
+      });
+
+      if (!user) {
+        throw new BadRequestException('El usuario no existe');
+      }
+
+      user.group = Number(idGroup);
+      user.state = 'fourthStep';
+
+      await this.userRepository.save(user);
+      const safeUser: SafeUser = {
+        id: user.id,
+        name: user.name,
+        lastName: user.lastName,
+        email: user.email,
+        documentNumber: user.documentNumber,
+        colour: user.colour,
+        state: user.state,
+        type: JSON.stringify(user.type),
+        group: user.group,
+      };
+      return safeUser;
+    } catch (error) {
+      console.error('Error en la validación del usuario:', error);
+
+      if (error instanceof BadRequestException) {
+        throw error; // Este error incluye el mensaje en la respuesta
+      }
+
+      throw new InternalServerErrorException(
+        'Error al cambiar el estado del usuario',
+      );
+    }
+  }
+
+  async updateSession(documentNumber: string): Promise<SafeUser> {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { documentNumber: documentNumber },
+      });
+
+      if (!user) {
+        throw new BadRequestException('El usuario no existe');
+      }
+
+      await this.userRepository.save(user);
+      const safeUser: SafeUser = {
+        id: user.id,
+        name: user.name,
+        lastName: user.lastName,
+        email: user.email,
+        documentNumber: user.documentNumber,
+        colour: user.colour,
+        state: user.state,
+        type: JSON.stringify(user.type),
+        group: user.group,
       };
       return safeUser;
     } catch (error) {

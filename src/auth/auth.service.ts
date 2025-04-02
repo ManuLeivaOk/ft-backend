@@ -18,6 +18,7 @@ export type SafeUser = {
   colour: string;
   state: string;
   type: string;
+  group: number;
 };
 
 @Injectable()
@@ -69,6 +70,7 @@ export class AuthService {
         colour: user.colour,
         state: user.state,
         type: JSON.stringify(user.type),
+        group: user.group,
       };
 
       return {
