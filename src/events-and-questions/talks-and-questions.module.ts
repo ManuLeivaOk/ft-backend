@@ -8,11 +8,16 @@ import { Questions } from './entities/questions.entity';
 import { User } from 'src/users/entity/user.entity';
 import { Event } from './entities/event.entity';
 import { Dni } from './entities/dni.entity';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Questions, Talks, User, Event, Dni]),
     UsersModule,
+    JwtModule.register({
+      secret: 'SECRET_KEY',
+      signOptions: { expiresIn: '4h' },
+    }),
   ],
   controllers: [TalksAndQuestionsController],
   providers: [TalksAndQuestionsService],

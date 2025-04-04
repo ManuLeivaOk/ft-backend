@@ -30,6 +30,8 @@ export class UsersService {
         ],
       });
 
+      console.log('existingUser', existingUser);
+
       if (existingUser) {
         throw new BadRequestException(
           'El DNI o el email ya están registrados.',

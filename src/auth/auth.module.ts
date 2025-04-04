@@ -12,7 +12,7 @@ import { JwtModule } from '@nestjs/jwt';
     TypeOrmModule.forFeature([User]),
     JwtModule.register({
       secret: 'SECRET_KEY',
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '4h' },
     }),
   ],
   controllers: [AuthController],

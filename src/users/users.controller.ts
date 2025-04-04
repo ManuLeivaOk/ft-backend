@@ -3,7 +3,6 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-users.dto';
 import { JwtAuthGuard } from 'src/guards/jwt.auth.guard';
 import { Public } from '../decorators/public.decorator';
-@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -15,6 +14,7 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('changeFirstState/:code/:documentNumber')
   async changeFirstState(
     @Param('code') code: string,
@@ -23,6 +23,7 @@ export class UsersController {
     return await this.usersService.changeFirstState(code, documentNumber);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('selectGroup/:documentNumber/:idGroup')
   async selectGroup(
     @Param('documentNumber') documentNumber: string,
@@ -31,6 +32,7 @@ export class UsersController {
     return await this.usersService.selectGroup(documentNumber, idGroup);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('updateSession')
   async updateSession(@Param('documentNumber') documentNumber: string) {
     return await this.usersService.updateSession(documentNumber);
