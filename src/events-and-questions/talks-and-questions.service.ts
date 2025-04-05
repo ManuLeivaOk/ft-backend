@@ -48,7 +48,7 @@ export class TalksAndQuestionsService {
   findAllQuestionsByTalk(talkId: number): Promise<Questions[]> {
     return this.questionsRepository.find({
       where: { talk: { id: talkId } },
-      relations: ['talk'],
+      relations: ['talk', 'user'],
     });
   }
 

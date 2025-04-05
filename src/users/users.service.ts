@@ -30,8 +30,6 @@ export class UsersService {
         ],
       });
 
-      console.log('existingUser', existingUser);
-
       if (existingUser) {
         throw new BadRequestException(
           'El DNI o el email ya están registrados.',
@@ -52,8 +50,9 @@ export class UsersService {
       });
 
       const newId = lastUser.length > 0 ? lastUser[0].id + 1 : 1;
-      const color = getColorById(newId);
 
+      const color = getColorById(newId);
+      
       const encryptPass: string = await hashedPassword(userData.password);
       const randomNumber = Math.floor(Math.random() * 6) + 1;
       const newUser = this.userRepository.create({

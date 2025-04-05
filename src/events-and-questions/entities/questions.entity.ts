@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { User } from 'src/users/entity/user.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { Talks } from './talks.entity';
 
 @Entity()

@@ -12,5 +12,5 @@ export function getColorById(id: number): string {
     'Blanco',
   ];
 
-  return colors[(id % 10) - 1];
+  return colors[(id - 1) % 10];
 }
