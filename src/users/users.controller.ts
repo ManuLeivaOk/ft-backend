@@ -33,7 +33,7 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('updateSession')
+  @Get('updateSession/:documentNumber')
   async updateSession(@Param('documentNumber') documentNumber: string) {
     return await this.usersService.updateSession(documentNumber);
   }

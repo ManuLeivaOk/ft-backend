@@ -52,7 +52,7 @@ export class UsersService {
       const newId = lastUser.length > 0 ? lastUser[0].id + 1 : 1;
 
       const color = getColorById(newId);
-      
+
       const encryptPass: string = await hashedPassword(userData.password);
       const randomNumber = Math.floor(Math.random() * 6) + 1;
       const newUser = this.userRepository.create({
@@ -191,6 +191,7 @@ export class UsersService {
         type: JSON.stringify(user.type),
         group: user.group,
       };
+
       return safeUser;
     } catch (error) {
       console.error('Error en la validación del usuario:', error);
